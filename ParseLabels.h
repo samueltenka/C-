@@ -8,4 +8,6 @@ enum parse_labels {
 	terms
 };
 
+char names[5][100] = {"num", "var", "unit", "factors", "terms"};
+
 #endif
