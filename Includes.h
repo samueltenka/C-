@@ -1,9 +1,12 @@
 #ifndef INCLUDES
 #define INCLUDES
 
-#include <cstdlib> // for NULL
+#define NULL 0
 
-#include <cstdio>
-#define ERROR(X) do {printf("ERROR: "); printf(X); printf("\n"); scanf("");} while(0)
+#include <iostream>
+	// I like C's printf,
+	// but also C++'s cin.s
+#define ERROR(X) do {printf("ERROR: "); printf(X); printf("\n"); \
+						char error_l; std::cin >> error_l;} while(0)
 
 #endif INCLUDES
