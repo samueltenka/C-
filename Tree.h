@@ -8,19 +8,12 @@ struct TNode {
 	X val;
 	TNode<X>* parent;
 	TNode<X>* next;
-	TNode<X>* youngest;
+	TNode<X>* youngest; // chldr_start, chldr_end
 
-	void init() {
+	TNode() {
 		parent = NULL;
 		next = NULL;
 		youngest = NULL;
-	}
-	TNode() {
-		init();
-	}
-	TNode(X v) {
-		init();
-		val = v;
 	}
 	bool is_root() {
 		return parent==NULL;
@@ -33,20 +26,19 @@ struct TNode {
 	}
 
 	X chop() {
-		if(firstborn->is_end()) {
+		if(is_leaf()) {
 			ERROR("can't chop TNode's children, since no children");
 		}
 		X v = youngest->val;
-		LNode<X>* new_y = youngest->next;
+		TNode<X>* new_y = youngest->next;
 		delete youngest;
 		youngest = new_y;
 		return v;
 	}
 	~TNode() {
-		while(!youngest->is_end()) {
+		while(youngest != NULL) {
 			chop(); // crazily inefficient, but don't want to write specialized pointer dance.
 		}
-		delete youngest;
 	}
 };
 
@@ -93,20 +85,26 @@ struct TAnt { // tree iterator
 		return current->val;
 	}
 	void rise() {
+		if(at_root()) {
+			ERROR("can't rise above root!");
+		}
 		current = current->parent;
 	}
 	void march() {
 		current = current->next;
 	}
-	void descend() {
+	void sink() {
+		if(at_leaf()) {
+			TNode<X>* baby = new TNode<X>;
+			baby->parent = current;
+			baby->next = current->youngest;
+			current->youngest = baby;
+		}
 		current = current->youngest;
 	}
 
-	void insert(X v) {
-		TNode<X>* baby = new TNode<X>(v);
-		baby->parent = current;
-		baby->next = current->youngest;
-		current->youngest = baby;
+	void set(X v) {
+		current->val = v;
 	}
 };
 
