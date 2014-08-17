@@ -36,16 +36,20 @@ struct Parser {
 		ptree_ant->set(l);
 	}
 	void sink() {
-		STATUS("SINKING!");
+		// STATUS("sinking!");
 		ptree_ant->sink();
 	}
+	void march() {
+		// STATUS("marching!");
+		ptree_ant->march();
+	}
 	void rise() {
-		STATUS("_RISING!");
+		// STATUS("rising!");
 		ptree_ant->rise();
 	}
 
 	void match_num() {
-		STATUS("match_num");
+		// STATUS("match_num");
 		char c = token_stream->val();
 		if(is_num(c)) {
 			label(parse_labels::num);
@@ -55,7 +59,7 @@ struct Parser {
 		}
 	}
 	void match_var() {
-		STATUS("match_var");
+		// STATUS("match_var");
 		char c = token_stream->val();
 		if(is_var(c)) {
 			label(parse_labels::var);
@@ -66,22 +70,22 @@ struct Parser {
 		}
 	}
 	void match_unit() {
-		STATUS("match_unit");
+		// STATUS("match_unit");
 		char c = token_stream->val();
 		if(is_num(c)) {
-			STATUS("\t attempt num");
+			// STATUS("\t attempt num");
 			label(parse_labels::unit);
 			sink();
 			match_num();
 			rise();
 		} else if(is_var(c)) {
-			STATUS("\t attempt var");
+			// STATUS("\t attempt var");
 			label(parse_labels::unit);
 			sink();
 			match_var();
 			rise();
 		} else if(c=='(') {
-			STATUS("\t attempt (terms)");
+			// STATUS("\t attempt (terms)");
 			label(parse_labels::unit);
 			sink();
 			match('(');
@@ -93,11 +97,12 @@ struct Parser {
 		}
 	}
 	void match_factors() {
-		STATUS("match_factors");
+		// STATUS("match_factors");
 		label(parse_labels::factors);
 		sink();
 		match_unit();
 		if(!token_stream->at_end()) {
+			march();
 			char c = token_stream->val();
 			if(c=='*') {
 				match('*');
@@ -107,11 +112,12 @@ struct Parser {
 		rise();
 	}
 	void match_terms() {
-		STATUS("match_terms");
+		// STATUS("match_terms");
 		label(parse_labels::terms);
 		sink();
 		match_factors();
 		if(!token_stream->at_end()) {
+			march();
 			char c = token_stream->val();
 			if(c=='+') {
 				match('+');
