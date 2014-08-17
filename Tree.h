@@ -91,6 +91,11 @@ struct TAnt { // tree iterator
 		current = current->parent;
 	}
 	void march() {
+		if(at_end()) {
+			TNode<X>* baby = new TNode<X>;
+			baby->parent = current->parent;
+			current->next = baby;
+		}
 		current = current->next;
 	}
 	void sink() {
